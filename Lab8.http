@@ -1,0 +1,31 @@
+@Lab8_HostAddress = http://localhost:5290
+
+GET {{Lab8_HostAddress}}/index.html
+
+###
+
+GET {{Lab8_HostAddress}}/assets/index-sUDB6EAt.css
+
+###
+
+GET {{Lab8_HostAddress}}/assets/index-BZBhdVK0.js
+
+###
+
+GET {{Lab8_HostAddress}}/favicon.svg
+
+###
+
+GET {{Lab8_HostAddress}}/ping
+
+###
+
+GET {{Lab8_HostAddress}}/trace
+
+###
+
+GET {{Lab8_HostAddress}}/blocked/test
+
+###
+
+GET {{Lab8_HostAddress}}/error
