@@ -1,24 +1,30 @@
 using System.Diagnostics;
+using System.Globalization;
 
-namespace Lab8.Middlewares
+namespace Lab8.Middlewares;
+
+public class EndpointTimingMiddleware : IMiddleware
 {
-    public class EndpointTimingMiddleware : IMiddleware
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        var originalBody = context.Response.Body;
+        await using var buffer = new MemoryStream();
+        context.Response.Body = buffer;
+        var stopwatch = Stopwatch.StartNew();
+        try
         {
-            var sw = Stopwatch.StartNew();
-
-            context.Response.OnStarting(() =>
-            {
-                sw.Stop();
-                context.Response.Headers.Append(
-                    "X-Endpoint-Elapsed-Ms",
-                    ((long)sw.Elapsed.TotalMilliseconds).ToString());
-
-                return Task.CompletedTask;
-            });
-
+            // Буфер откладывает отправку ответа до установки заголовка.
             await next(context);
+            stopwatch.Stop();
+            context.Response.Headers["X-Endpoint-Elapsed-Ms"] =
+                stopwatch.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture);
+            context.Response.Body = originalBody;
+            buffer.Position = 0;
+            await buffer.CopyToAsync(originalBody, context.RequestAborted);
+        }
+        finally
+        {
+            context.Response.Body = originalBody;
         }
     }
 }

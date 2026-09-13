@@ -24,7 +24,7 @@ app.MapGet("/trace", (HttpContext context) =>
     return Results.Ok(context.Items["TraceId"]);
 });
 
-app.MapGet("/error", () =>
+app.MapGet("/error", IResult () =>
 {
     throw new Exception("Error for handling");
 });

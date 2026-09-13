@@ -6,7 +6,7 @@ namespace Lab8.Middlewares
         {
             var path = context.Request.Path;
 
-            if (path.StartsWithSegments("/blocked"))
+            if (path.Value?.StartsWith("/blocked", StringComparison.OrdinalIgnoreCase) == true)
             {
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 return;
